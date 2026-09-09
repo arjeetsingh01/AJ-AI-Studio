@@ -1,0 +1,511 @@
+/* =========================================
+   FEATURES SECTION
+========================================= */
+
+.features-section {
+  position: relative;
+  width: 100%;
+  padding: 120px 0;
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(99, 102, 241, 0.1),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 75%,
+      rgba(139, 92, 246, 0.08),
+      transparent 30%
+    ),
+    #070a12;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.features-header {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto 65px;
+}
+
+.features-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 8px 15px;
+
+  border: 1px solid rgba(129, 140, 248, 0.25);
+  border-radius: 50px;
+
+  background: rgba(99, 102, 241, 0.08);
+
+  color: #a5b4fc;
+
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+
+  backdrop-filter: blur(12px);
+}
+
+.features-badge svg {
+  width: 17px;
+  height: 17px;
+
+  color: #a78bfa;
+}
+
+.features-title {
+  font-size: clamp(2.5rem, 5vw, 4.5rem) !important;
+  line-height: 1.05 !important;
+
+  font-weight: 800 !important;
+  letter-spacing: -2px;
+
+  color: #ffffff;
+}
+
+.features-title span {
+  background: linear-gradient(
+    90deg,
+    #818cf8,
+    #a78bfa,
+    #c084fc,
+    #818cf8
+  );
+
+  background-size: 300% 100%;
+
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: featureGradient 5s ease infinite;
+}
+
+.features-description {
+  max-width: 650px;
+
+  color: #8f93a3 !important;
+
+  font-size: 1rem !important;
+  line-height: 1.8 !important;
+}
+
+/* =========================================
+   GRID
+========================================= */
+
+.features-grid {
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================================
+   CARD
+========================================= */
+
+.feature-card {
+  position: relative;
+
+  height: 100%;
+  min-height: 285px;
+
+  overflow: hidden;
+
+  border-radius: 20px !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.055),
+      rgba(255, 255, 255, 0.018)
+    ) !important;
+
+  box-shadow:
+    0 15px 45px rgba(0, 0, 0, 0.18);
+
+  backdrop-filter: blur(15px);
+
+  opacity: 0;
+
+  animation: cardAppear 0.7s ease forwards;
+
+  transition:
+    transform 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.feature-card::before {
+  content: "";
+
+  position: absolute;
+
+  width: 180px;
+  height: 180px;
+
+  top: -100px;
+  right: -80px;
+
+  border-radius: 50%;
+
+  background: rgba(99, 102, 241, 0.14);
+
+  filter: blur(40px);
+
+  transition: transform 0.4s ease;
+}
+
+.feature-card::after {
+  content: "";
+
+  position: absolute;
+
+  left: 10%;
+  right: 10%;
+  bottom: 0;
+
+  height: 1px;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(129, 140, 248, 0.5),
+    transparent
+  );
+
+  opacity: 0;
+
+  transition: opacity 0.35s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+
+  border-color: rgba(129, 140, 248, 0.35);
+
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.3),
+    0 0 35px rgba(99, 102, 241, 0.08);
+}
+
+.feature-card:hover::before {
+  transform: scale(1.5);
+}
+
+.feature-card:hover::after {
+  opacity: 1;
+}
+
+/* =========================================
+   CARD CONTENT
+========================================= */
+
+.feature-card-content {
+  position: relative;
+  z-index: 2;
+
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 30px !important;
+}
+
+/* =========================================
+   ICON
+========================================= */
+
+.feature-icon-wrapper {
+  margin-bottom: 24px;
+}
+
+.feature-icon {
+  width: 56px;
+  height: 56px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 15px;
+
+  background: rgba(99, 102, 241, 0.12);
+
+  border: 1px solid rgba(129, 140, 248, 0.18);
+
+  color: #a5b4fc;
+
+  transition:
+    transform 0.35s ease,
+    background 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.feature-icon svg {
+  width: 27px;
+  height: 27px;
+}
+
+.feature-card:hover .feature-icon {
+  transform: rotate(-5deg) scale(1.08);
+
+  background: rgba(99, 102, 241, 0.2);
+
+  box-shadow:
+    0 0 25px rgba(99, 102, 241, 0.18);
+}
+
+/* =========================================
+   TITLE
+========================================= */
+
+.feature-title {
+  color: #f4f4f5 !important;
+
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+
+  margin-bottom: 12px !important;
+}
+
+/* =========================================
+   DESCRIPTION
+========================================= */
+
+.feature-description {
+  color: #8b8f9d !important;
+
+  font-size: 0.88rem !important;
+  line-height: 1.7 !important;
+}
+
+/* =========================================
+   EXPLORE
+========================================= */
+
+.feature-arrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-top: auto;
+  padding-top: 24px;
+
+  color: #818cf8;
+
+  font-size: 0.82rem;
+  font-weight: 600;
+
+  transition:
+    gap 0.3s ease,
+    color 0.3s ease;
+}
+
+.feature-card:hover .feature-arrow {
+  gap: 12px;
+  color: #a78bfa;
+}
+
+/* =========================================
+   BOTTOM CTA
+========================================= */
+
+.features-bottom {
+  position: relative;
+
+  margin-top: 70px;
+}
+
+.features-cta {
+  position: relative;
+  z-index: 2;
+
+  padding: 32px 38px;
+
+  border: 1px solid rgba(129, 140, 248, 0.16);
+  border-radius: 22px;
+
+  background:
+    linear-gradient(
+      110deg,
+      rgba(99, 102, 241, 0.09),
+      rgba(139, 92, 246, 0.035)
+    );
+
+  backdrop-filter: blur(15px);
+}
+
+.features-cta-title {
+  color: #ffffff !important;
+
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+}
+
+.features-cta-text {
+  margin-top: 6px !important;
+
+  color: #858995 !important;
+
+  font-size: 0.9rem !important;
+}
+
+.features-cta-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 13px 20px;
+
+  border-radius: 12px;
+
+  color: #ffffff;
+
+  background: linear-gradient(
+    135deg,
+    #6366f1,
+    #8b5cf6
+  );
+
+  font-size: 0.88rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 30px rgba(99, 102, 241, 0.2);
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.features-cta-button:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 15px 40px rgba(99, 102, 241, 0.3);
+}
+
+.features-cta-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* =========================================
+   CTA GLOW
+========================================= */
+
+.features-bottom-glow {
+  position: absolute;
+
+  width: 300px;
+  height: 120px;
+
+  left: 50%;
+  bottom: -30px;
+
+  transform: translateX(-50%);
+
+  background: rgba(99, 102, 241, 0.12);
+
+  filter: blur(70px);
+
+  pointer-events: none;
+}
+
+/* =========================================
+   ANIMATIONS
+========================================= */
+
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(35px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes featureGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 900px) {
+  .features-section {
+    padding: 90px 0;
+  }
+
+  .features-header {
+    margin-bottom: 50px;
+  }
+
+  .feature-card {
+    min-height: 270px;
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+  .features-section {
+    padding: 75px 0;
+  }
+
+  .features-header {
+    margin-bottom: 40px;
+  }
+
+  .features-title {
+    font-size: 2.6rem !important;
+    letter-spacing: -1.5px;
+  }
+
+  .features-description {
+    font-size: 0.92rem !important;
+  }
+
+  .feature-card-content {
+    padding: 25px !important;
+  }
+
+  .features-cta {
+    padding: 25px;
+    align-items: flex-start;
+  }
+
+  .features-cta-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

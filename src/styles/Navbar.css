@@ -1,0 +1,408 @@
+/* ================================
+   AJ AI STUDIO NAVBAR
+================================ */
+
+.aj-navbar {
+  background: rgba(7, 10, 20, 0.72) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border-bottom: 1px solid
+    rgba(255, 255, 255, 0.08);
+
+  overflow: hidden;
+
+  transition:
+    background 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+/* Bottom moving light */
+
+.navbar-light-line {
+  position: absolute;
+  bottom: 0;
+  left: -25%;
+  width: 25%;
+  height: 1px;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #818cf8,
+    #c084fc,
+    transparent
+  );
+
+  box-shadow:
+    0 0 12px rgba(129, 140, 248, 0.8);
+
+  animation: navbarLight 5s linear infinite;
+}
+
+@keyframes navbarLight {
+  0% {
+    left: -25%;
+  }
+
+  100% {
+    left: 100%;
+  }
+}
+
+/* ================================
+   TOOLBAR
+================================ */
+
+.aj-toolbar {
+  min-height: 72px !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* ================================
+   LOGO
+================================ */
+
+.aj-logo-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  text-decoration: none;
+
+  flex-grow: 1;
+}
+
+.aj-logo-icon {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #6366f1,
+      #8b5cf6
+    );
+
+  box-shadow:
+    0 0 20px rgba(99, 102, 241, 0.35);
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.aj-logo-icon svg {
+  font-size: 21px;
+}
+
+.aj-logo-link:hover .aj-logo-icon {
+  transform: rotate(8deg) scale(1.08);
+
+  box-shadow:
+    0 0 30px rgba(139, 92, 246, 0.65);
+}
+
+.aj-logo-text {
+  color: white !important;
+
+  font-size: 1.15rem !important;
+
+  font-weight: 800 !important;
+
+  letter-spacing: -0.4px;
+}
+
+/* ================================
+   DESKTOP NAV
+================================ */
+
+.aj-desktop-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.nav-item {
+  position: relative;
+
+  color: #94a3b8 !important;
+
+  min-width: auto !important;
+
+  padding: 9px 15px !important;
+
+  border-radius: 9px !important;
+
+  transition:
+    color 0.25s ease,
+    background 0.25s ease;
+}
+
+.nav-item::after {
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+  bottom: 3px;
+
+  width: 0;
+  height: 2px;
+
+  transform: translateX(-50%);
+
+  border-radius: 10px;
+
+  background: linear-gradient(
+    90deg,
+    #6366f1,
+    #c084fc
+  );
+
+  transition: width 0.3s ease;
+}
+
+.nav-item:hover {
+  color: white !important;
+
+  background: rgba(
+    99,
+    102,
+    241,
+    0.08
+  ) !important;
+}
+
+.nav-item:hover::after,
+.nav-item.active::after {
+  width: 55%;
+}
+
+.nav-item.active {
+  color: white !important;
+}
+
+/* ================================
+   ACTION BUTTONS
+================================ */
+
+.aj-desktop-actions {
+  margin-left: 18px;
+  gap: 6px;
+}
+
+.login-btn {
+  color: #e2e8f0 !important;
+
+  border-radius: 10px !important;
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+
+  background:
+    rgba(255, 255, 255, 0.06) !important;
+}
+
+.start-btn {
+  color: white !important;
+
+  border-radius: 11px !important;
+
+  padding: 10px 18px !important;
+
+  font-weight: 700 !important;
+
+  background:
+    linear-gradient(
+      90deg,
+      #6366f1,
+      #8b5cf6,
+      #6366f1
+    ) !important;
+
+  background-size: 200% 100% !important;
+
+  box-shadow:
+    0 8px 25px
+      rgba(99, 102, 241, 0.25);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.start-btn:hover {
+  transform: translateY(-2px);
+
+  background-position: 100% 0;
+
+  box-shadow:
+    0 10px 35px
+      rgba(139, 92, 246, 0.45);
+}
+
+/* ================================
+   MOBILE
+================================ */
+
+.mobile-menu-btn {
+  display: none !important;
+
+  color: white !important;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ================================
+   MOBILE DRAWER
+================================ */
+
+.mobile-drawer {
+  width: min(320px, 85vw);
+
+  background:
+    linear-gradient(
+      160deg,
+      #0b1020,
+      #070a12
+    ) !important;
+
+  color: white !important;
+
+  border-left: 1px solid
+    rgba(255, 255, 255, 0.08);
+}
+
+.mobile-menu {
+  padding: 22px;
+  min-height: 100%;
+}
+
+.mobile-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 35px;
+}
+
+.mobile-menu-header .MuiIconButton-root {
+  color: #94a3b8;
+}
+
+.mobile-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mobile-brand p {
+  font-weight: 800;
+}
+
+/* Mobile nav */
+
+.mobile-nav-item {
+  justify-content: flex-start !important;
+
+  color: #cbd5e1 !important;
+
+  padding: 13px 14px !important;
+
+  border-radius: 10px !important;
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.mobile-nav-item:hover {
+  color: white !important;
+
+  transform: translateX(5px);
+
+  background:
+    rgba(99, 102, 241, 0.1) !important;
+}
+
+.mobile-divider {
+  height: 1px;
+
+  margin: 15px 0;
+
+  background:
+    rgba(255, 255, 255, 0.08);
+}
+
+.mobile-login {
+  justify-content: flex-start !important;
+
+  color: white !important;
+
+  padding: 13px 14px !important;
+}
+
+.mobile-start {
+  color: white !important;
+
+  padding: 13px 14px !important;
+
+  border-radius: 11px !important;
+
+  background:
+    linear-gradient(
+      90deg,
+      #6366f1,
+      #8b5cf6
+    ) !important;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 900px) {
+  .aj-desktop-nav,
+  .aj-desktop-actions {
+    display: none !important;
+  }
+
+  .mobile-menu-btn {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .aj-toolbar {
+    min-height: 64px !important;
+  }
+
+  .aj-logo-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .aj-logo-text {
+    font-size: 1rem !important;
+  }
+
+  .mobile-drawer {
+    width: min(300px, 88vw);
+  }
+}

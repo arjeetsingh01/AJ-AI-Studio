@@ -1,0 +1,525 @@
+/* =====================================
+   ABOUT SECTION
+===================================== */
+
+.about-section {
+  position: relative;
+  width: 100%;
+  padding: 120px 0;
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 85% 45%,
+      rgba(99, 102, 241, 0.1),
+      transparent 32%
+    ),
+    #070a12;
+}
+
+/* =====================================
+   CONTENT
+===================================== */
+
+.about-content {
+  max-width: 650px;
+}
+
+.about-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 8px 15px;
+  margin-bottom: 25px;
+
+  border: 1px solid rgba(129, 140, 248, 0.25);
+  border-radius: 50px;
+
+  background: rgba(99, 102, 241, 0.08);
+
+  color: #a5b4fc;
+
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.about-badge svg {
+  width: 17px;
+  height: 17px;
+}
+
+.about-title {
+  color: #ffffff;
+
+  font-size: clamp(2.7rem, 5vw, 4.5rem) !important;
+  line-height: 1.05 !important;
+
+  font-weight: 800 !important;
+  letter-spacing: -2px;
+}
+
+.about-title span {
+  background: linear-gradient(
+    90deg,
+    #818cf8,
+    #a78bfa,
+    #c084fc
+  );
+
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.about-description {
+  margin-top: 24px !important;
+
+  color: #8f93a3 !important;
+
+  font-size: 1rem !important;
+  line-height: 1.8 !important;
+}
+
+/* =====================================
+   CHECK LIST
+===================================== */
+
+.about-check-list {
+  margin-top: 30px;
+}
+
+.about-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: #c4c7d0;
+}
+
+.about-check svg {
+  width: 19px;
+  height: 19px;
+
+  color: #818cf8;
+}
+
+/* =====================================
+   VISUAL
+===================================== */
+
+.about-visual {
+  position: relative;
+
+  min-height: 500px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-glow {
+  position: absolute;
+
+  width: 330px;
+  height: 330px;
+
+  border-radius: 50%;
+
+  background: rgba(99, 102, 241, 0.18);
+
+  filter: blur(80px);
+
+  animation: aboutGlow 4s ease-in-out infinite;
+}
+
+/* =====================================
+   MAIN PANEL
+===================================== */
+
+.about-panel {
+  position: relative;
+  z-index: 2;
+
+  width: min(460px, 85%);
+  min-height: 390px;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(30, 41, 59, 0.75),
+      rgba(15, 23, 42, 0.65)
+    );
+
+  backdrop-filter: blur(20px);
+
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.35),
+    0 0 50px rgba(99, 102, 241, 0.08);
+
+  animation: aboutPanelFloat 5s ease-in-out infinite;
+}
+
+.about-panel-top {
+  display: flex;
+  gap: 7px;
+
+  padding: 17px 20px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.about-dot {
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.about-panel-content {
+  padding: 45px 35px;
+  text-align: center;
+}
+
+.about-main-icon {
+  width: 75px;
+  height: 75px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 20px;
+
+  border-radius: 22px;
+
+  background: rgba(99, 102, 241, 0.15);
+
+  border: 1px solid rgba(129, 140, 248, 0.25);
+
+  color: #a5b4fc;
+
+  box-shadow:
+    0 0 35px rgba(99, 102, 241, 0.12);
+}
+
+.about-main-icon svg {
+  width: 38px;
+  height: 38px;
+}
+
+.about-panel-title {
+  color: #ffffff !important;
+
+  font-size: 1.5rem !important;
+  font-weight: 800 !important;
+}
+
+.about-panel-text {
+  margin-top: 7px !important;
+
+  color: #777d8c !important;
+
+  font-size: 0.9rem !important;
+}
+
+/* =====================================
+   MINI CARDS
+===================================== */
+
+.about-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 12px;
+
+  margin-top: 30px;
+}
+
+.about-mini-card {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 13px;
+
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.035);
+
+  color: #b9bdc8;
+
+  font-size: 0.78rem;
+  font-weight: 600;
+
+  transition:
+    transform 0.3s ease,
+    background 0.3s ease;
+}
+
+.about-mini-card:hover {
+  transform: translateY(-3px);
+
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.about-mini-card svg {
+  width: 18px;
+  height: 18px;
+
+  color: #818cf8;
+}
+
+/* =====================================
+   FLOATING CARDS
+===================================== */
+
+.about-floating-card {
+  position: absolute;
+  z-index: 4;
+
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 13px 17px;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 13px;
+
+  background: rgba(15, 23, 42, 0.75);
+
+  backdrop-filter: blur(15px);
+
+  color: #e4e4e7;
+
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.3);
+
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.about-floating-card svg {
+  width: 18px;
+  height: 18px;
+
+  color: #a78bfa;
+}
+
+.about-floating-one {
+  top: 17%;
+  left: 0;
+
+  animation: aboutFloatOne 4s ease-in-out infinite;
+}
+
+.about-floating-two {
+  right: 0;
+  bottom: 17%;
+
+  animation: aboutFloatTwo 4.5s ease-in-out infinite;
+}
+
+/* =====================================
+   BENEFITS
+===================================== */
+
+.about-benefits {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 22px;
+
+  margin-top: 100px;
+}
+
+.about-benefit-card {
+  padding: 30px;
+
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.025);
+
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    background 0.3s ease;
+}
+
+.about-benefit-card:hover {
+  transform: translateY(-7px);
+
+  border-color: rgba(129, 140, 248, 0.25);
+
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.about-benefit-icon {
+  width: 50px;
+  height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 20px;
+
+  border-radius: 14px;
+
+  background: rgba(99, 102, 241, 0.1);
+
+  color: #a5b4fc;
+}
+
+.about-benefit-icon svg {
+  width: 25px;
+  height: 25px;
+}
+
+.about-benefit-title {
+  color: #f4f4f5 !important;
+
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+}
+
+.about-benefit-text {
+  margin-top: 10px !important;
+
+  color: #858995 !important;
+
+  font-size: 0.86rem !important;
+  line-height: 1.7 !important;
+}
+
+/* =====================================
+   ANIMATIONS
+===================================== */
+
+@keyframes aboutGlow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+@keyframes aboutPanelFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-10px) rotate(0.5deg);
+  }
+}
+
+@keyframes aboutFloatOne {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes aboutFloatTwo {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(12px);
+  }
+}
+
+/* =====================================
+   TABLET
+===================================== */
+
+@media (max-width: 900px) {
+  .about-section {
+    padding: 90px 0;
+  }
+
+  .about-content {
+    max-width: 800px;
+    margin: auto;
+  }
+
+  .about-visual {
+    min-height: 460px;
+  }
+
+  .about-benefits {
+    margin-top: 70px;
+  }
+}
+
+/* =====================================
+   MOBILE
+===================================== */
+
+@media (max-width: 600px) {
+  .about-section {
+    padding: 75px 0;
+  }
+
+  .about-title {
+    font-size: 2.6rem !important;
+  }
+
+  .about-description {
+    font-size: 0.92rem !important;
+  }
+
+  .about-visual {
+    min-height: 390px;
+  }
+
+  .about-panel {
+    width: 92%;
+    min-height: 340px;
+  }
+
+  .about-panel-content {
+    padding: 30px 20px;
+  }
+
+  .about-floating-one {
+    left: -5px;
+  }
+
+  .about-floating-two {
+    right: -5px;
+  }
+
+  .about-benefits {
+    grid-template-columns: 1fr;
+    margin-top: 55px;
+  }
+
+  .about-mini-grid {
+    gap: 8px;
+  }
+}
