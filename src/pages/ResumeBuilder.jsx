@@ -74,7 +74,7 @@ function ResumeBuilder() {
       }
 
       const response = await axios.post(
-        "http://localhost:5000/api/tools/resume-builder",
+        "https://aj-ai-studio-backend.onrender.com",
         {
           name: name.trim(),
           email: email.trim(),

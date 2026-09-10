@@ -56,7 +56,7 @@ function Register() {
       setLoading(true);
 
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "https://aj-ai-studio-backend.onrender.com",
         {
           name: name.trim(),
           email: email.trim(),

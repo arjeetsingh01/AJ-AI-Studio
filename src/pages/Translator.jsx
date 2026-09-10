@@ -99,7 +99,7 @@ function Translator() {
       }
 
       const response = await axios.post(
-        "http://localhost:5000/api/tools/translator",
+        "https://aj-ai-studio-backend.onrender.com",
         {
           text: text.trim(),
           targetLanguage: targetLanguage,

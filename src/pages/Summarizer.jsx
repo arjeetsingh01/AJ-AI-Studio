@@ -60,7 +60,7 @@ function Summarizer() {
       }
 
       const response = await axios.post(
-        "http://localhost:5000/api/tools/summarizer",
+        "https://aj-ai-studio-backend.onrender.com",
         {
           text: text.trim(),
         },

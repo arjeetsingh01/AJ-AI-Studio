@@ -97,7 +97,7 @@ function ImageGenerator() {
       setResult(null);
 
       const response = await axios.post(
-        "http://localhost:5000/api/tools/image-generator",
+        "https://aj-ai-studio-backend.onrender.com",
         {
           prompt: prompt.trim(),
         },

@@ -240,7 +240,7 @@ function DocumentQA() {
       setAnswer("");
 
       const response = await axios.post(
-        "http://localhost:5000/api/tools/document-qa",
+        "https://aj-ai-studio-backend.onrender.com",
         {
           documentText: documentText.trim(),
           question: question.trim(),

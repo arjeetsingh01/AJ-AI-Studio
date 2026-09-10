@@ -84,7 +84,7 @@ function Settings() {
       }
 
       const response = await axios.get(
-        "http://localhost:5000/api/user/profile",
+        "https://aj-ai-studio-backend.onrender.com",
         getAuthConfig()
       );
 

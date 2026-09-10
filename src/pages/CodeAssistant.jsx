@@ -99,7 +99,7 @@ function CodeAssistant() {
       setCode("");
 
       const response = await axios.post(
-        "http://localhost:5000/api/tools/code-assistant",
+        "https://aj-ai-studio-backend.onrender.com",
         {
           code: request.trim(),
           language: language,

@@ -79,7 +79,7 @@ function EmailWriter() {
       }
 
       const response = await axios.post(
-        "http://localhost:5000/api/tools/email-writer",
+        "https://aj-ai-studio-backend.onrender.com",
         {
           purpose: purpose.trim(),
           tone: tone.trim(),
