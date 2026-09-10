@@ -47,7 +47,7 @@ function Login() {
       setLoading(true);
 
       const response = await axios.post(
-        "https://aj-ai-studio-backend.onrender.com",
+        "https://aj-ai-studio-backend.onrender.com/api/auth/login",
         {
           email: email.trim(),
           password,

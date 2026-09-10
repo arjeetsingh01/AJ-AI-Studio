@@ -240,14 +240,14 @@ function DocumentQA() {
       setAnswer("");
 
       const response = await axios.post(
-        "https://aj-ai-studio-backend.onrender.com",
+        "https://aj-ai-studio-backend.onrender.com/api/tools/document-qa",
         {
           documentText: documentText.trim(),
           question: question.trim(),
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`, 
           },
         }
       );

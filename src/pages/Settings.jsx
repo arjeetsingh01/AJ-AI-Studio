@@ -84,7 +84,7 @@ function Settings() {
       }
 
       const response = await axios.get(
-        "https://aj-ai-studio-backend.onrender.com",
+        "https://aj-ai-studio-backend.onrender.com/api/user/profile",
         getAuthConfig()
       );
 
@@ -153,7 +153,7 @@ function Settings() {
       setSavingProfile(true);
 
       const response = await axios.put(
-        "http://localhost:5000/api/user/profile",
+        "https://aj-ai-studio-backend.onrender.com/api/user/profile",
         {
           name: name.trim(),
           email: email.trim(),
@@ -253,7 +253,7 @@ function Settings() {
       setChangingPassword(true);
 
       const response = await axios.put(
-        "http://localhost:5000/api/user/change-password",
+        "https://aj-ai-studio-backend.onrender.com/api/user/change-password",
         {
           currentPassword,
           newPassword,

@@ -89,7 +89,7 @@ function Dashboard() {
         }
 
         const response = await axios.get(
-          "https://aj-ai-studio-backend.onrender.com",
+          "https://aj-ai-studio-backend.onrender.com/api/dashboard",
           {
             headers: {
               Authorization: `Bearer ${token}`,

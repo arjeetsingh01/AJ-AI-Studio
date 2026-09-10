@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-
 import axios from "axios";
 
 import {
@@ -7,188 +6,73 @@ import {
   Box,
   Button,
   Chip,
+  CircularProgress,
+  Divider,
   IconButton,
   Paper,
   Snackbar,
   Stack,
-  TextField,
+  Tab,
+  Tabs,
   Typography,
 } from "@mui/material";
 
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
+import DeleteIcon from "@mui/icons-material/Delete";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
-import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
-import TranslateOutlinedIcon from "@mui/icons-material/TranslateOutlined";
-import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
-import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
+import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined";
+import RefreshOutlinedIcon from "@mui/icons-material/RefreshOutlined";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+
+const API_BASE =
+  "https://aj-ai-studio-backend.onrender.com";
 
 function History() {
-  const [search, setSearch] = useState("");
+  const [activeTab, setActiveTab] = useState(0);
 
-  const [history, setHistory] = useState([]);
+  const [chatHistory, setChatHistory] = useState([]);
+  const [toolHistory, setToolHistory] = useState([]);
 
   const [loading, setLoading] = useState(true);
-
   const [deletingId, setDeletingId] = useState(null);
 
-  const [clearing, setClearing] = useState(false);
-
-  const [snackbar, setSnackbar] = useState({
+  const [message, setMessage] = useState({
     open: false,
-    message: "",
+    text: "",
     severity: "success",
   });
 
-  // Get icon according to history type
-  const getHistoryIcon = (type) => {
-    switch (type) {
-      case "AI Chat":
-        return <ChatOutlinedIcon />;
-
-      case "Code Assistant":
-        return <CodeOutlinedIcon />;
-
-      case "Translator":
-        return <TranslateOutlinedIcon />;
-
-      case "Summarizer":
-        return <DescriptionOutlinedIcon />;
-
-      case "Email Writer":
-        return <EmailOutlinedIcon />;
-
-      case "Image Generator":
-        return <ImageOutlinedIcon />;
-
-      case "Document Q&A":
-        return <ArticleOutlinedIcon />;
-
-      default:
-        return <AutoAwesomeOutlinedIcon />;
-    }
-  };
-
-  // Convert backend tool name into UI name
-  const getToolName = (tool) => {
-    const toolNames = {
-      summarizer: "Summarizer",
-      translator: "Translator",
-      "resume-builder": "Resume Builder",
-      "email-writer": "Email Writer",
-      "code-assistant": "Code Assistant",
-      "image-generator": "Image Generator",
-      "document-qa": "Document Q&A",
-    };
-
-    return toolNames[tool] || tool;
-  };
-
-  // Format date/time
-  const formatTime = (date) => {
-    if (!date) {
-      return "";
-    }
-
-    const historyDate = new Date(date);
-
-    if (Number.isNaN(historyDate.getTime())) {
-      return "";
-    }
-
-    const now = new Date();
-
-    const difference = now.getTime() - historyDate.getTime();
-
-    const seconds = Math.floor(difference / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (seconds < 60) {
-      return "Just now";
-    }
-
-    if (minutes < 60) {
-      return `${minutes} min ago`;
-    }
-
-    if (hours < 24) {
-      return `${hours} hour${hours > 1 ? "s" : ""} ago`;
-    }
-
-    if (days < 7) {
-      return `${days} day${days > 1 ? "s" : ""} ago`;
-    }
-
-    return historyDate.toLocaleDateString();
-  };
-
-  // Create UI history item from chat
-  const createChatHistoryItem = (chat) => {
-    const message = chat.message || "";
-    const reply = chat.reply || "";
+  const getAuthConfig = () => {
+    const token = localStorage.getItem("token");
 
     return {
-      id: `chat-${chat._id}`,
-      backendId: chat._id,
-      category: "chat",
-      title: "AI Chat Conversation",
-      description: message || reply || "AI Chat conversation",
-      type: "AI Chat",
-      time: formatTime(chat.createdAt),
-      icon: getHistoryIcon("AI Chat"),
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     };
   };
 
-  // Create UI history item from tool history
-  const createToolHistoryItem = (item) => {
-    const toolName = getToolName(item.tool);
-
-    let description = "AI tool activity";
-
-    if (item.tool === "summarizer") {
-      description =
-        item.input?.text || "Text summarization activity";
-    } else if (item.tool === "translator") {
-      description =
-        item.input?.text || "Translation activity";
-    } else if (item.tool === "resume-builder") {
-      description =
-        item.input?.name
-          ? `Resume created for ${item.input.name}`
-          : "Resume builder activity";
-    } else if (item.tool === "email-writer") {
-      description =
-        item.input?.purpose || "Professional email activity";
-    } else if (item.tool === "code-assistant") {
-      description =
-        item.input?.request || "Code assistant activity";
-    } else if (item.tool === "image-generator") {
-      description =
-        item.input?.prompt || "Image generation activity";
-    } else if (item.tool === "document-qa") {
-      description =
-        item.input?.question || "Document Q&A activity";
-    }
-
-    return {
-      id: `tool-${item._id}`,
-      backendId: item._id,
-      category: "tool",
-      title: toolName,
-      description,
-      type: toolName,
-      time: formatTime(item.createdAt),
-      icon: getHistoryIcon(toolName),
-    };
+  const showMessage = (
+    text,
+    severity = "success"
+  ) => {
+    setMessage({
+      open: true,
+      text,
+      severity,
+    });
   };
 
-  // Fetch all history
+  const closeMessage = () => {
+    setMessage((prev) => ({
+      ...prev,
+      open: false,
+    }));
+  };
+
+  // -----------------------------
+  // Fetch History
+  // -----------------------------
   const fetchHistory = async () => {
     try {
       setLoading(true);
@@ -196,620 +80,814 @@ function History() {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        setHistory([]);
+        showMessage(
+          "Please login to view your history.",
+          "error"
+        );
         return;
       }
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
+      const [chatResponse, toolResponse] =
+        await Promise.all([
+          axios.get(
+            `${API_BASE}/api/ai/history`,
+            getAuthConfig()
+          ),
 
-      const [chatResponse, toolResponse] = await Promise.all([
-        axios.get(
-          "http://localhost:5000/api/ai/history",
-          config
-        ),
+          axios.get(
+            `${API_BASE}/api/tool-history`,
+            getAuthConfig()
+          ),
+        ]);
 
-        axios.get(
-          "http://localhost:5000/api/tool-history",
-          config
-        ),
-      ]);
+      const chats =
+        chatResponse.data?.history ||
+        chatResponse.data?.data ||
+        [];
 
-      const chats = chatResponse.data?.chats || [];
+      const tools =
+        toolResponse.data?.history ||
+        toolResponse.data?.data ||
+        [];
 
-      const tools = toolResponse.data?.history || [];
+      setChatHistory(
+        Array.isArray(chats) ? chats : []
+      );
 
-      const chatHistory = chats.map(createChatHistoryItem);
-
-      const toolHistory = tools.map(createToolHistoryItem);
-
-      const combinedHistory = [
-        ...chatHistory,
-        ...toolHistory,
-      ].sort((a, b) => {
-        const dateA = new Date(
-          a.category === "chat"
-            ? chats.find((chat) => chat._id === a.backendId)?.createdAt
-            : tools.find((tool) => tool._id === a.backendId)?.createdAt
-        );
-
-        const dateB = new Date(
-          b.category === "chat"
-            ? chats.find((chat) => chat._id === b.backendId)?.createdAt
-            : tools.find((tool) => tool._id === b.backendId)?.createdAt
-        );
-
-        return dateB - dateA;
-      });
-
-      setHistory(combinedHistory);
+      setToolHistory(
+        Array.isArray(tools) ? tools : []
+      );
     } catch (error) {
-      console.error("Fetch History Error:", error);
+      console.error(
+        "Fetch History Error:",
+        error
+      );
 
-      setSnackbar({
-        open: true,
-        message:
-          error.response?.data?.message ||
-          "Failed to load history",
-        severity: "error",
-      });
+      showMessage(
+        error.response?.data?.message ||
+          "Failed to load history.",
+        "error"
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch history when page opens
   useEffect(() => {
     fetchHistory();
   }, []);
 
-  // Delete one history item
-  const handleDeleteItem = async (item) => {
+  // -----------------------------
+  // Normalize history
+  // -----------------------------
+  const normalizedChatHistory = useMemo(() => {
+    return chatHistory.map((item) => ({
+      ...item,
+      historyType: "chat",
+      backendId:
+        item._id ||
+        item.id ||
+        item.historyId,
+    }));
+  }, [chatHistory]);
+
+  const normalizedToolHistory = useMemo(() => {
+    return toolHistory.map((item) => ({
+      ...item,
+      historyType: "tool",
+      backendId:
+        item._id ||
+        item.id ||
+        item.historyId,
+    }));
+  }, [toolHistory]);
+
+  const currentHistory =
+    activeTab === 0
+      ? normalizedChatHistory
+      : normalizedToolHistory;
+
+  // -----------------------------
+  // Date formatter
+  // -----------------------------
+  const formatDate = (dateValue) => {
+    if (!dateValue) {
+      return "Unknown date";
+    }
+
+    const date = new Date(dateValue);
+
+    if (Number.isNaN(date.getTime())) {
+      return "Unknown date";
+    }
+
+    return date.toLocaleString("en-IN", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+  };
+
+  // -----------------------------
+  // Tool name
+  // -----------------------------
+  const getToolName = (item) => {
+    return (
+      item.toolName ||
+      item.tool ||
+      item.type ||
+      item.name ||
+      "AI Tool"
+    );
+  };
+
+  // -----------------------------
+  // Get title
+  // -----------------------------
+  const getTitle = (item) => {
+    if (item.historyType === "chat") {
+      return (
+        item.title ||
+        item.prompt ||
+        item.message ||
+        item.userMessage ||
+        "AI Chat"
+      );
+    }
+
+    return (
+      item.title ||
+      item.toolName ||
+      item.tool ||
+      item.type ||
+      "AI Tool"
+    );
+  };
+
+  // -----------------------------
+  // Get description
+  // -----------------------------
+  const getDescription = (item) => {
+    if (item.historyType === "chat") {
+      return (
+        item.response ||
+        item.aiResponse ||
+        item.answer ||
+        item.result ||
+        "No response available."
+      );
+    }
+
+    return (
+      item.input ||
+      item.prompt ||
+      item.content ||
+      item.result ||
+      item.output ||
+      "Tool activity"
+    );
+  };
+
+  // -----------------------------
+  // Delete single history
+  // -----------------------------
+  const handleDelete = async (item) => {
+    if (!item.backendId) {
+      showMessage(
+        "Unable to delete this history item.",
+        "error"
+      );
+      return;
+    }
+
     try {
-      setDeletingId(item.id);
+      setDeletingId(item.backendId);
 
-      const token = localStorage.getItem("token");
+      let endpoint = "";
 
-      if (!token) {
-        return;
-      }
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      if (item.category === "chat") {
-        await axios.delete(
-          `http://localhost:5000/api/ai/history/${item.backendId}`,
-          config
-        );
+      if (item.historyType === "chat") {
+        endpoint = `${API_BASE}/api/ai/history/${item.backendId}`;
       } else {
-        await axios.delete(
-          `http://localhost:5000/api/tool-history/${item.backendId}`,
-          config
-        );
+        endpoint = `${API_BASE}/api/tool-history/${item.backendId}`;
       }
 
-      setHistory((previousHistory) =>
-        previousHistory.filter(
-          (historyItem) => historyItem.id !== item.id
-        )
+      await axios.delete(
+        endpoint,
+        getAuthConfig()
       );
 
-      setSnackbar({
-        open: true,
-        message: "History deleted successfully",
-        severity: "success",
-      });
-    } catch (error) {
-      console.error("Delete History Error:", error);
+      if (item.historyType === "chat") {
+        setChatHistory((prev) =>
+          prev.filter(
+            (historyItem) =>
+              (historyItem._id ||
+                historyItem.id ||
+                historyItem.historyId) !==
+              item.backendId
+          )
+        );
+      } else {
+        setToolHistory((prev) =>
+          prev.filter(
+            (historyItem) =>
+              (historyItem._id ||
+                historyItem.id ||
+                historyItem.historyId) !==
+              item.backendId
+          )
+        );
+      }
 
-      setSnackbar({
-        open: true,
-        message:
-          error.response?.data?.message ||
-          "Failed to delete history",
-        severity: "error",
-      });
+      showMessage(
+        "History deleted successfully.",
+        "success"
+      );
+    } catch (error) {
+      console.error(
+        "Delete History Error:",
+        error
+      );
+
+      showMessage(
+        error.response?.data?.message ||
+          "Failed to delete history.",
+        "error"
+      );
     } finally {
       setDeletingId(null);
     }
   };
 
-  // Clear complete history
+  // -----------------------------
+  // Clear current history
+  // -----------------------------
   const handleClearHistory = async () => {
-    if (history.length === 0) {
+    if (currentHistory.length === 0) {
+      showMessage(
+        "There is no history to clear.",
+        "info"
+      );
       return;
     }
 
     try {
-      setClearing(true);
+      setLoading(true);
 
-      const token = localStorage.getItem("token");
+      if (activeTab === 0) {
+        await Promise.all(
+          normalizedChatHistory
+            .filter((item) => item.backendId)
+            .map((item) =>
+              axios.delete(
+                `${API_BASE}/api/ai/history/${item.backendId}`,
+                getAuthConfig()
+              )
+            )
+        );
 
-      if (!token) {
-        return;
+        setChatHistory([]);
+      } else {
+        await Promise.all(
+          normalizedToolHistory
+            .filter((item) => item.backendId)
+            .map((item) =>
+              axios.delete(
+                `${API_BASE}/api/tool-history/${item.backendId}`,
+                getAuthConfig()
+              )
+            )
+        );
+
+        setToolHistory([]);
       }
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      // Delete all history items individually.
-      await Promise.all(
-        history.map((item) => {
-          if (item.category === "chat") {
-            return axios.delete(
-              `http://localhost:5000/api/ai/history/${item.backendId}`,
-              config
-            );
-          }
-
-          return axios.delete(
-            `http://localhost:5000/api/tool-history/${item.backendId}`,
-            config
-          );
-        })
+      showMessage(
+        "History cleared successfully.",
+        "success"
+      );
+    } catch (error) {
+      console.error(
+        "Clear History Error:",
+        error
       );
 
-      setHistory([]);
+      showMessage(
+        error.response?.data?.message ||
+          "Failed to clear history.",
+        "error"
+      );
 
-      setSnackbar({
-        open: true,
-        message: "All history cleared successfully",
-        severity: "success",
-      });
-    } catch (error) {
-      console.error("Clear History Error:", error);
-
-      setSnackbar({
-        open: true,
-        message:
-          error.response?.data?.message ||
-          "Failed to clear history",
-        severity: "error",
-      });
-
-      // Refresh in case some items were deleted
-      fetchHistory();
+      // Refresh so UI stays synced with backend
+      await fetchHistory();
     } finally {
-      setClearing(false);
+      setLoading(false);
     }
   };
 
-  // Search history
-  const filteredHistory = useMemo(() => {
-    const searchText = search.toLowerCase().trim();
-
-    if (!searchText) {
-      return history;
-    }
-
-    return history.filter((item) => {
-      const text = `${item.title} ${item.description} ${item.type}`;
-
-      return text.toLowerCase().includes(searchText);
-    });
-  }, [history, search]);
-
   return (
-    <Box
-      sx={{
-        minHeight: "calc(100vh - 78px)",
-        px: { xs: 2, sm: 3, md: 5 },
-        py: { xs: 4, md: 6 },
-        background:
-          "radial-gradient(circle at top left, #1e1b4b, #070a12 45%, #020617)",
-      }}
-    >
-      <Box sx={{ maxWidth: 1100, mx: "auto" }}>
-        {/* Header */}
-        <Box sx={{ textAlign: "center", mb: 5 }}>
-          <Chip
-            icon={<HistoryOutlinedIcon />}
-            label="AI HISTORY"
-            sx={{
-              mb: 2,
-              color: "#c7d2fe",
-              background: "rgba(99,102,241,0.12)",
-              border: "1px solid rgba(99,102,241,0.35)",
-              fontWeight: 700,
-            }}
-          />
-
-          <Typography
-            variant="h3"
-            sx={{
-              color: "#ffffff",
-              fontWeight: 800,
-              fontSize: {
-                xs: "2rem",
-                sm: "2.6rem",
-                md: "3.2rem",
-              },
-              mb: 1,
-            }}
-          >
-            Your AI History
-          </Typography>
-
-          <Typography
-            sx={{
-              color: "#94a3b8",
-              maxWidth: 650,
-              mx: "auto",
-            }}
-          >
-            View and manage your recent activity in AJ AI Studio.
-          </Typography>
-        </Box>
-
-        {/* Search + Clear */}
-        <Paper
-          elevation={0}
+    <>
+      <Box
+        sx={{
+          minHeight: "calc(100vh - 78px)",
+          px: {
+            xs: 2,
+            sm: 3,
+            md: 5,
+          },
+          py: {
+            xs: 4,
+            md: 6,
+          },
+          background:
+            "radial-gradient(circle at top right, #1e1b4b, #070a12 45%, #020617)",
+        }}
+      >
+        <Box
           sx={{
-            p: { xs: 2, sm: 3 },
-            mb: 3,
-            borderRadius: 4,
-            background: "rgba(15,23,42,0.82)",
-            border: "1px solid rgba(99,102,241,0.2)",
-            backdropFilter: "blur(18px)",
+            maxWidth: 1050,
+            mx: "auto",
           }}
         >
-          <Stack
-            direction={{ xs: "column", sm: "row" }}
-            spacing={2}
+          {/* Header */}
+          <Box
+            sx={{
+              textAlign: "center",
+              mb: 5,
+            }}
           >
-            <TextField
-              fullWidth
-              placeholder="Search your history..."
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <SearchOutlinedIcon
-                    sx={{
-                      color: "#64748b",
-                      mr: 1,
-                    }}
-                  />
-                ),
-              }}
+            <Chip
+              icon={<HistoryOutlinedIcon />}
+              label="HISTORY"
               sx={{
-                "& .MuiInputBase-root": {
-                  color: "#ffffff",
-                  background: "rgba(2,6,23,0.35)",
-                },
-
-                "& .MuiInputBase-input": {
-                  color: "#ffffff",
-                },
-
-                "& .MuiInputBase-input::placeholder": {
-                  color: "#94a3b8",
-                  opacity: 1,
-                },
-
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "rgba(148,163,184,0.25)",
-                },
-
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "rgba(129,140,248,0.65)",
-                },
-
-                "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#6366f1",
-                },
+                mb: 2,
+                color: "#c7d2fe",
+                background:
+                  "rgba(99, 102, 241, 0.12)",
+                border:
+                  "1px solid rgba(99, 102, 241, 0.35)",
+                fontWeight: 700,
               }}
             />
 
-            <Button
-              variant="outlined"
-              startIcon={<DeleteOutlineOutlinedIcon />}
-              onClick={handleClearHistory}
-              disabled={
-                history.length === 0 || clearing
-              }
+            <Typography
+              variant="h3"
               sx={{
-                minWidth: { xs: "100%", sm: 170 },
-                color: "#fca5a5",
-                borderColor: "rgba(248,113,113,0.35)",
-                borderRadius: 2,
-                fontWeight: 700,
+                color: "#ffffff",
+                fontWeight: 800,
+                fontSize: {
+                  xs: "2rem",
+                  sm: "2.6rem",
+                  md: "3.2rem",
+                },
+                mb: 1,
               }}
             >
-              {clearing ? "Clearing..." : "Clear History"}
-            </Button>
-          </Stack>
-        </Paper>
+              Your AI History
+            </Typography>
 
-        {/* History List */}
-        <Paper
-          elevation={0}
-          sx={{
-            p: { xs: 2, sm: 3 },
-            borderRadius: 4,
-            background: "rgba(15,23,42,0.82)",
-            border: "1px solid rgba(99,102,241,0.2)",
-            backdropFilter: "blur(18px)",
-          }}
-        >
-          <Stack spacing={2}>
-            {/* Section Header */}
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
+            <Typography
+              sx={{
+                color: "#94a3b8",
+                maxWidth: 650,
+                mx: "auto",
+              }}
             >
-              <Box>
-                <Typography
-                  sx={{
-                    color: "#ffffff",
-                    fontWeight: 800,
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  Recent Activity
-                </Typography>
+              View and manage your previous AI chats
+              and tool activities.
+            </Typography>
+          </Box>
 
-                <Typography
-                  sx={{
-                    color: "#64748b",
-                    fontSize: "0.85rem",
-                    mt: 0.3,
-                  }}
-                >
-                  {filteredHistory.length} activities found
-                </Typography>
-              </Box>
-
-              <AutoAwesomeOutlinedIcon
+          {/* Main Card */}
+          <Paper
+            elevation={0}
+            sx={{
+              p: {
+                xs: 2,
+                sm: 3,
+                md: 4,
+              },
+              borderRadius: 4,
+              background:
+                "rgba(15, 23, 42, 0.82)",
+              border:
+                "1px solid rgba(99, 102, 241, 0.2)",
+              backdropFilter: "blur(18px)",
+            }}
+          >
+            {/* Tabs + Actions */}
+            <Stack
+              direction={{
+                xs: "column",
+                md: "row",
+              }}
+              spacing={2}
+              justifyContent="space-between"
+              alignItems={{
+                xs: "stretch",
+                md: "center",
+              }}
+              sx={{ mb: 3 }}
+            >
+              <Tabs
+                value={activeTab}
+                onChange={(_, value) =>
+                  setActiveTab(value)
+                }
+                variant="scrollable"
+                scrollButtons="auto"
                 sx={{
-                  color: "#6366f1",
-                  fontSize: 30,
+                  "& .MuiTab-root": {
+                    color: "#94a3b8",
+                    fontWeight: 700,
+                  },
+
+                  "& .Mui-selected": {
+                    color: "#818cf8 !important",
+                  },
+
+                  "& .MuiTabs-indicator": {
+                    background:
+                      "linear-gradient(90deg, #6366f1, #8b5cf6)",
+                  },
                 }}
-              />
+              >
+                <Tab
+                  icon={<ChatOutlinedIcon />}
+                  iconPosition="start"
+                  label={`Chats (${chatHistory.length})`}
+                />
+
+                <Tab
+                  icon={<BuildOutlinedIcon />}
+                  iconPosition="start"
+                  label={`Tools (${toolHistory.length})`}
+                />
+              </Tabs>
+
+              <Stack
+                direction="row"
+                spacing={1}
+                justifyContent={{
+                  xs: "space-between",
+                  md: "flex-end",
+                }}
+              >
+                <Button
+                  variant="outlined"
+                  startIcon={
+                    <RefreshOutlinedIcon />
+                  }
+                  onClick={fetchHistory}
+                  disabled={loading}
+                  sx={{
+                    color: "#c7d2fe",
+                    borderColor:
+                      "rgba(129, 140, 248, 0.35)",
+                    borderRadius: 2,
+                    fontWeight: 700,
+                  }}
+                >
+                  Refresh
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  color="error"
+                  startIcon={
+                    <DeleteIcon />
+                  }
+                  onClick={handleClearHistory}
+                  disabled={
+                    loading ||
+                    currentHistory.length === 0
+                  }
+                  sx={{
+                    borderRadius: 2,
+                    fontWeight: 700,
+                  }}
+                >
+                  Clear
+                </Button>
+              </Stack>
             </Stack>
+
+            <Divider
+              sx={{
+                borderColor:
+                  "rgba(148, 163, 184, 0.1)",
+                mb: 3,
+              }}
+            />
 
             {/* Loading */}
             {loading ? (
               <Box
                 sx={{
-                  py: 9,
-                  textAlign: "center",
+                  minHeight: 300,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  gap: 2,
                 }}
               >
+                <CircularProgress
+                  sx={{ color: "#818cf8" }}
+                />
+
                 <Typography
-                  sx={{
-                    color: "#94a3b8",
-                    fontWeight: 700,
-                  }}
+                  sx={{ color: "#94a3b8" }}
                 >
                   Loading your history...
                 </Typography>
               </Box>
-            ) : filteredHistory.length > 0 ? (
-              filteredHistory.map((item) => (
-                <Box
-                  key={item.id}
-                  sx={{
-                    p: { xs: 2, sm: 2.5 },
-                    borderRadius: 3,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 2,
-                    background: "rgba(2,6,23,0.4)",
-                    border:
-                      "1px solid rgba(148,163,184,0.1)",
-                    transition: "all 0.25s ease",
-
-                    "&:hover": {
-                      borderColor:
-                        "rgba(129,140,248,0.45)",
-                      transform: "translateY(-2px)",
-                    },
-                  }}
-                >
-                  {/* Icon */}
-                  <Box
-                    sx={{
-                      minWidth: 48,
-                      width: 48,
-                      height: 48,
-                      borderRadius: 2.5,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "#a5b4fc",
-                      background:
-                        "rgba(99,102,241,0.12)",
-                    }}
-                  >
-                    {item.icon}
-                  </Box>
-
-                  {/* Content */}
-                  <Box
-                    sx={{
-                      flex: 1,
-                      minWidth: 0,
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        color: "#ffffff",
-                        fontWeight: 700,
-                        fontSize: "0.98rem",
-                      }}
-                    >
-                      {item.title}
-                    </Typography>
-
-                    <Typography
-                      sx={{
-                        color: "#94a3b8",
-                        fontSize: "0.82rem",
-                        mt: 0.4,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: {
-                          xs: "normal",
-                          sm: "nowrap",
-                        },
-                      }}
-                    >
-                      {item.description}
-                    </Typography>
-
-                    <Chip
-                      label={item.type}
-                      size="small"
-                      sx={{
-                        mt: 1,
-                        height: 24,
-                        color: "#a5b4fc",
-                        background:
-                          "rgba(99,102,241,0.1)",
-                        border:
-                          "1px solid rgba(99,102,241,0.2)",
-                        fontSize: "0.7rem",
-                      }}
-                    />
-                  </Box>
-
-                  {/* Time + Delete */}
-                  <Stack
-                    alignItems="flex-end"
-                    spacing={1}
-                    sx={{
-                      display: {
-                        xs: "none",
-                        sm: "flex",
-                      },
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        color: "#64748b",
-                        fontSize: "0.75rem",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {item.time}
-                    </Typography>
-
-                    <IconButton
-                      size="small"
-                      onClick={() =>
-                        handleDeleteItem(item)
-                      }
-                      disabled={
-                        deletingId === item.id
-                      }
-                      sx={{
-                        color: "#f87171",
-
-                        "&:hover": {
-                          background:
-                            "rgba(248,113,113,0.12)",
-                        },
-                      }}
-                    >
-                      <DeleteOutlineOutlinedIcon fontSize="small" />
-                    </IconButton>
-                  </Stack>
-                </Box>
-              ))
-            ) : (
+            ) : currentHistory.length === 0 ? (
+              /* Empty */
               <Box
                 sx={{
-                  py: 9,
+                  minHeight: 300,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "column",
                   textAlign: "center",
+                  px: 2,
                 }}
               >
-                <HistoryOutlinedIcon
-                  sx={{
-                    fontSize: 65,
-                    color: "#334155",
-                    mb: 2,
-                  }}
-                />
+                {activeTab === 0 ? (
+                  <ChatOutlinedIcon
+                    sx={{
+                      fontSize: 60,
+                      color: "#475569",
+                      mb: 2,
+                    }}
+                  />
+                ) : (
+                  <BuildOutlinedIcon
+                    sx={{
+                      fontSize: 60,
+                      color: "#475569",
+                      mb: 2,
+                    }}
+                  />
+                )}
 
                 <Typography
                   sx={{
-                    color: "#94a3b8",
-                    fontWeight: 700,
-                    fontSize: "1.1rem",
+                    color: "#ffffff",
+                    fontWeight: 800,
+                    fontSize: "1.2rem",
+                    mb: 0.7,
                   }}
                 >
-                  No history found
+                  No{" "}
+                  {activeTab === 0
+                    ? "chat"
+                    : "tool"}{" "}
+                  history yet
                 </Typography>
 
                 <Typography
                   sx={{
                     color: "#64748b",
-                    mt: 0.7,
-                    fontSize: "0.9rem",
+                    maxWidth: 450,
                   }}
                 >
-                  Your AI activity will appear here.
+                  Your previous{" "}
+                  {activeTab === 0
+                    ? "AI conversations"
+                    : "AI tool activities"}{" "}
+                  will appear here.
                 </Typography>
               </Box>
-            )}
-          </Stack>
-        </Paper>
+            ) : (
+              /* History List */
+              <Stack spacing={2}>
+                {currentHistory.map(
+                  (item, index) => (
+                    <Paper
+                      key={
+                        item.backendId ||
+                        `${item.historyType}-${index}`
+                      }
+                      elevation={0}
+                      sx={{
+                        p: {
+                          xs: 2,
+                          sm: 2.5,
+                        },
+                        borderRadius: 3,
+                        background:
+                          "rgba(2, 6, 23, 0.42)",
+                        border:
+                          "1px solid rgba(148, 163, 184, 0.1)",
+                        transition:
+                          "all 0.25s ease",
+                        "&:hover": {
+                          borderColor:
+                            "rgba(129, 140, 248, 0.35)",
+                          transform:
+                            "translateY(-2px)",
+                        },
+                      }}
+                    >
+                      <Stack
+                        direction="row"
+                        spacing={2}
+                        alignItems="flex-start"
+                      >
+                        {/* Icon */}
+                        <Box
+                          sx={{
+                            width: 45,
+                            height: 45,
+                            minWidth: 45,
+                            borderRadius: 2,
+                            display: "flex",
+                            alignItems:
+                              "center",
+                            justifyContent:
+                              "center",
+                            background:
+                              "rgba(99, 102, 241, 0.12)",
+                            color: "#818cf8",
+                          }}
+                        >
+                          {item.historyType ===
+                          "chat" ? (
+                            <ChatOutlinedIcon />
+                          ) : (
+                            <BuildOutlinedIcon />
+                          )}
+                        </Box>
 
-        {/* Footer Note */}
-        <Typography
-          sx={{
-            color: "#475569",
-            textAlign: "center",
-            fontSize: "0.78rem",
-            mt: 3,
-          }}
-        >
-          AJ AI Studio • History data is securely stored in
-          your account
-        </Typography>
+                        {/* Content */}
+                        <Box
+                          sx={{
+                            flex: 1,
+                            minWidth: 0,
+                          }}
+                        >
+                          <Stack
+                            direction={{
+                              xs: "column",
+                              sm: "row",
+                            }}
+                            spacing={1}
+                            alignItems={{
+                              xs: "flex-start",
+                              sm: "center",
+                            }}
+                            sx={{ mb: 0.7 }}
+                          >
+                            <Typography
+                              sx={{
+                                color:
+                                  "#ffffff",
+                                fontWeight: 800,
+                                wordBreak:
+                                  "break-word",
+                              }}
+                            >
+                              {getTitle(item)}
+                            </Typography>
+
+                            {item.historyType ===
+                              "tool" && (
+                              <Chip
+                                size="small"
+                                label={getToolName(
+                                  item
+                                )}
+                                sx={{
+                                  color:
+                                    "#c7d2fe",
+                                  background:
+                                    "rgba(99, 102, 241, 0.12)",
+                                  fontSize:
+                                    "0.7rem",
+                                }}
+                              />
+                            )}
+                          </Stack>
+
+                          <Typography
+                            sx={{
+                              color:
+                                "#94a3b8",
+                              fontSize:
+                                "0.88rem",
+                              lineHeight: 1.6,
+                              display:
+                                "-webkit-box",
+                              WebkitLineClamp: 3,
+                              WebkitBoxOrient:
+                                "vertical",
+                              overflow:
+                                "hidden",
+                              wordBreak:
+                                "break-word",
+                            }}
+                          >
+                            {getDescription(
+                              item
+                            )}
+                          </Typography>
+
+                          <Stack
+                            direction="row"
+                            spacing={0.7}
+                            alignItems="center"
+                            sx={{ mt: 1.2 }}
+                          >
+                            <AccessTimeOutlinedIcon
+                              sx={{
+                                fontSize: 16,
+                                color:
+                                  "#64748b",
+                              }}
+                            />
+
+                            <Typography
+                              sx={{
+                                color:
+                                  "#64748b",
+                                fontSize:
+                                  "0.75rem",
+                              }}
+                            >
+                              {formatDate(
+                                item.createdAt ||
+                                  item.updatedAt ||
+                                  item.date
+                              )}
+                            </Typography>
+                          </Stack>
+                        </Box>
+
+                        {/* Delete */}
+                        <IconButton
+                          onClick={() =>
+                            handleDelete(
+                              item
+                            )
+                          }
+                          disabled={
+                            deletingId ===
+                            item.backendId
+                          }
+                          sx={{
+                            color: "#f87171",
+                            flexShrink: 0,
+                            "&:hover": {
+                              background:
+                                "rgba(239, 68, 68, 0.1)",
+                            },
+                          }}
+                        >
+                          {deletingId ===
+                          item.backendId ? (
+                            <CircularProgress
+                              size={20}
+                              color="inherit"
+                            />
+                          ) : (
+                           <DeleteIcon />
+                          )}
+                        </IconButton>
+                      </Stack>
+                    </Paper>
+                  )
+                )}
+              </Stack>
+            )}
+          </Paper>
+        </Box>
       </Box>
 
       {/* Snackbar */}
       <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={() =>
-          setSnackbar((previous) => ({
-            ...previous,
-            open: false,
-          }))
-        }
+        open={message.open}
+        autoHideDuration={3500}
+        onClose={closeMessage}
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
+          vertical: "top",
+          horizontal: "right",
         }}
       >
         <Alert
-          severity={snackbar.severity}
+          severity={message.severity}
           variant="filled"
-          onClose={() =>
-            setSnackbar((previous) => ({
-              ...previous,
-              open: false,
-            }))
-          }
+          onClose={closeMessage}
+          sx={{
+            width: "100%",
+            borderRadius: 2,
+            fontWeight: 600,
+          }}
         >
-          {snackbar.message}
+          {message.text}
         </Alert>
       </Snackbar>
-    </Box>
+    </>
   );
 }
 

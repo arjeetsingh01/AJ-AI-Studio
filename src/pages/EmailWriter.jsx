@@ -78,18 +78,18 @@ function EmailWriter() {
         return;
       }
 
-      const response = await axios.post(
-        "https://aj-ai-studio-backend.onrender.com",
-        {
-          purpose: purpose.trim(),
-          tone: tone.trim(),
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await axios.post(
+          "https://aj-ai-studio-backend.onrender.com/api/tools/email-writer",
+          {
+            purpose: purpose.trim(),
+            tone: tone.trim(),
           },
-        }
-      );
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
       let result = response.data?.result || "";
 

@@ -56,7 +56,7 @@ function AIChat() {
 
     try {
       const response = await axios.post(
-        "https://aj-ai-studio-backend.onrender.com",
+        "https://aj-ai-studio-backend.onrender.com/api/ai/chat",
         {
           message: text,
         },
