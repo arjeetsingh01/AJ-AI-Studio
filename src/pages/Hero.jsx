@@ -14,6 +14,8 @@ import {
   Security,
 } from "@mui/icons-material";
 
+import { Link } from "react-router-dom";
+
 import "../styles/Hero.css";
 
 function Hero() {
@@ -57,6 +59,8 @@ function Hero() {
               className="hero-buttons"
             >
               <Button
+                component={Link}
+                to="/register"
                 variant="contained"
                 endIcon={<ArrowForward />}
                 className="primary-hero-btn"
@@ -65,6 +69,8 @@ function Hero() {
               </Button>
 
               <Button
+                component={Link}
+                to="/tools"
                 variant="outlined"
                 startIcon={<RocketLaunch />}
                 className="secondary-hero-btn"
